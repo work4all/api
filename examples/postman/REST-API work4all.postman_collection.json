@@ -1,0 +1,573 @@
+{
+	"info": {
+		"_postman_id": "f2ec9bd1-86e1-4197-b34f-bb3f6519cf6e",
+		"name": "REST-API work4all",
+		"description": "Store your API url in the API_URL variable.\n\nComplete Swagger documentation of the API via the link {{API_URl}}/swagger/index.html\n\nTo use the REST-API, a corresponding user must be created using work4all, here you will find the description: https://help.work4all.de?id=cd672282-1583-4806-8c37-7445f10bd1a0\n\nStore the login data in the corresponding variables.\n\nThe Kunde/Query and Kunde/Count endpoints are explained here using customers as an example. You will also find the same endpoints for all other entities that can be retrieved, e.g. articles, projects, offers, etc.  \nSimply duplicate the requests if you want to use them on other entities.\n\nThere are no explicit examples for the Get/Delete/Post/Put endpoints in this collection, these are self-explanatory.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25569982"
+	},
+	"item": [
+		{
+			"name": "LOGIN",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"{{API_USER}}\",\r\n  \"passwordHash\": \"{{API_PASS}}\",\r\n  \"application\": \"service.api\",     //Must always be service.api\r\n  \"refreshToken\": \"\",               //unused\r\n  \"deviceType\": \"\"                  //unused\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/Auth/Login",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"Auth",
+						"Login"
+					]
+				},
+				"description": "Login for the service user who is set up to access the REST API.\n\nYou will receive a token in response, which you should store in the Token variable. The Token is valid for two hours, after which you must log in again.\n\nYou will also receive a list of the available clients in the response. Decide here which client you would like to work on and store the code in the variable MandantenCode."
+			},
+			"response": []
+		},
+		{
+			"name": "KUNDE Query unfiltered",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "MandantenCode",
+						"value": "{{MandantenCode}}",
+						"description": "The code of the tenant on which the query is executed.",
+						"type": "text"
+					},
+					{
+						"key": "LoadComplexity",
+						"value": "1",
+						"description": "Controls how many levels of information you receive in the result. \n1 = only the properties of the customer, 2 = the properties of the customer + 1 level, e.g. the contact person data.\nATTENTION: The answers quickly become very large with high complexity, so keep them as small as possible.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"sortOrderFieldName\": \"\",         //Property to be sorted by\r\n  \"sortOrderEnity\": \"\",             //Can be ignored\r\n  \"sortOrder\": \"Ascending\",\r\n  \"max\": 3,                         //Retrieves the first three hits\r\n  \"page\": 0,                        //You can use this to control pagination and call up the next x elements.\r\n  \"groupFields\": true,\r\n  \"distinct\": true,\r\n  \"countField\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/Kunde/Query",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"Kunde",
+						"Query"
+					]
+				},
+				"description": "Retrieves the first three hits unfiltered, in the result you can view the properties of the customers, which you can filter on in the next step. You can use LoadComplexity to access dependent objects below, such as contact persons."
+			},
+			"response": []
+		},
+		{
+			"name": "KUNDE Query filtered",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "MandantenCode",
+						"value": "{{MandantenCode}}",
+						"description": "The code of the tenant on which the query is executed.",
+						"type": "text"
+					},
+					{
+						"key": "LoadComplexity",
+						"value": "1",
+						"description": "Controls how many levels of information you receive in the result. \n1 = only the properties of the customer, 2 = the properties of the customer + 1 level, e.g. the contact person data.\nATTENTION: The answers quickly become very large with high complexity, so keep them as small as possible.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"sortOrderFieldName\": \"\",                 //Property to be sorted by\r\n  \"sortOrderEnity\": \"\",                     //Can be ignored\r\n  \"sortOrder\": \"Ascending\",                 //Sorting direction\r\n  \"max\": 0,                                 //Retrieves all hits\r\n  \"page\": 0,                                //You can use this to control pagination and call up the next x elements.\r\n  \"groupFields\": true,                      //Can be ignored\r\n    \"filterItems\": [\r\n    {\r\n      \"filterEntityType\": \"\",               //Can be ignored\r\n      \"filterPropertyName\": \"Nummer\",       //The property to be filtered by\r\n      \"filterValue\": \"123456\",              //The value to be filtered by\r\n      \"operator\": \"Equal\",                  //Possible operators: Equal, Like, Contains, Greater, GreaterOrEqual, Smaller, SmallerOrEqual, NotEqual, IsNull, NotIsNull, InValueList, NotInValueList, see Swagger documentation\r\n      \"not\": false,                         //Must be false always\r\n      \"connectFilterBy\": \"And\",             //If there are several filters, this property is used to determine the linking of the filters\r\n      \"index\": 0,                           //Can be ignored\r\n      \"subFilterFields\": []                 //Can be ignored\r\n    }\r\n  ],\r\n  \"distinct\": true,                         //Can be ignored\r\n  \"countField\": \"\"                          //Can be ignored\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/Kunde/Query",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"Kunde",
+						"Query"
+					]
+				},
+				"description": "Retrieves all customers with the number 123456. Set the property by which you want to filter and the FilterValue here."
+			},
+			"response": []
+		},
+		{
+			"name": "KUNDE Count",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "MandantenCode",
+						"value": "{{MandantenCode}}",
+						"description": "The code of the tenant on which the query is executed.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"sortOrderFieldName\": \"\",                 //Property to be sorted by\r\n  \"sortOrderEnity\": \"\",                     //Can be ignored\r\n  \"sortOrder\": \"Ascending\",                 //Sorting direction\r\n  \"max\": 0,                                 //Retrieves all hits\r\n  \"page\": 0,                                //You can use this to control pagination and call up the next x elements.\r\n  \"groupFields\": true,                      //Can be ignored\r\n    \"filterItems\": [\r\n    {\r\n      \"filterEntityType\": \"\",               //Can be ignored\r\n      \"filterPropertyName\": \"Nummer\",       //The property to be filtered by\r\n      \"filterValue\": \"123456\",              //The value to be filtered by\r\n      \"operator\": \"Equal\",                  //Possible operators: Equal, Like, Contains, Greater, GreaterOrEqual, Smaller, SmallerOrEqual, NotEqual, IsNull, NotIsNull, InValueList, NotInValueList, see Swagger documentation\r\n      \"not\": false,                         //Must be false always\r\n      \"connectFilterBy\": \"And\",             //If there are several filters, this property is used to determine the linking of the filters\r\n      \"index\": 0,                           //Can be ignored\r\n      \"subFilterFields\": []                 //Can be ignored\r\n    }\r\n  ],\r\n  \"distinct\": true,                         //Can be ignored\r\n  \"countField\": \"\"                          //Can be ignored\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/Kunde/Count",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"Kunde",
+						"Count"
+					]
+				},
+				"description": "Call analogous to /api/Kunde/Query. Endpoint only returns the number of hits as the result."
+			},
+			"response": []
+		},
+		{
+			"name": "ARTIKEL Query unfiltered",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "MandantenCode",
+						"value": "{{MandantenCode}}",
+						"description": "The code of the tenant on which the query is executed.",
+						"type": "text"
+					},
+					{
+						"key": "LoadComplexity",
+						"value": "1",
+						"description": "Controls how many levels of information you receive in the result. \n1 = only the properties of the customer, 2 = the properties of the customer + 1 level, e.g. the contact person data.\nATTENTION: The answers quickly become very large with high complexity, so keep them as small as possible.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"sortOrderFieldName\": \"\",         //Property to be sorted by\r\n  \"sortOrderEnity\": \"\",             //Can be ignored\r\n  \"sortOrder\": \"Ascending\",\r\n  \"max\": 3,                         //Retrieves the first three hits\r\n  \"page\": 0,                        //You can use this to control pagination and call up the next x elements.\r\n  \"groupFields\": true,\r\n  \"distinct\": true,\r\n  \"countField\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/Artikel/Query",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"Artikel",
+						"Query"
+					]
+				},
+				"description": "Retrieves the first three hits unfiltered, in the result you can view the properties of the articles, which you can filter on in the next step. You can use LoadComplexity to access dependent objects below, such as prices."
+			},
+			"response": []
+		},
+		{
+			"name": "ARTIKEL Query filtered",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "MandantenCode",
+						"value": "{{MandantenCode}}",
+						"description": "The code of the tenant on which the query is executed.",
+						"type": "text"
+					},
+					{
+						"key": "LoadComplexity",
+						"value": "1",
+						"description": "Controls how many levels of information you receive in the result. \n1 = only the properties of the customer, 2 = the properties of the customer + 1 level, e.g. the contact person data.\nATTENTION: The answers quickly become very large with high complexity, so keep them as small as possible.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"sortOrderFieldName\": \"\",                 //Property to be sorted by\r\n  \"sortOrderEnity\": \"\",                     //Can be ignored\r\n  \"sortOrder\": \"Ascending\",                 //Sorting direction\r\n  \"max\": 0,                                 //Retrieves all hits\r\n  \"page\": 0,                                //You can use this to control pagination and call up the next x elements.\r\n  \"groupFields\": true,                      //Can be ignored\r\n    \"filterItems\": [\r\n    {\r\n      \"filterEntityType\": \"\",               //Can be ignored\r\n      \"filterPropertyName\": \"Nummer\",       //The property to be filtered by\r\n      \"filterValue\": \"123456\",              //The value to be filtered by\r\n      \"operator\": \"Equal\",                  //Possible operators: Equal, Like, Contains, Greater, GreaterOrEqual, Smaller, SmallerOrEqual, NotEqual, IsNull, NotIsNull, InValueList, NotInValueList, see Swagger documentation\r\n      \"not\": false,                         //Must be false always\r\n      \"connectFilterBy\": \"And\",             //If there are several filters, this property is used to determine the linking of the filters\r\n      \"index\": 0,                           //Can be ignored\r\n      \"subFilterFields\": []                 //Can be ignored\r\n    }\r\n  ],\r\n  \"distinct\": true,                         //Can be ignored\r\n  \"countField\": \"\"                          //Can be ignored\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/Artikel/Query",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"Artikel",
+						"Query"
+					]
+				},
+				"description": "Retrieves all articles with the number 123456. Set the property by which you want to filter and the FilterValue here."
+			},
+			"response": []
+		},
+		{
+			"name": "AUFTRAG Create",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "MandantenCode",
+						"value": "{{MandantenCode}}",
+						"description": "Der Code des Mandanten auf dem die Abfrage ausgeführt wird.\n",
+						"type": "text"
+					},
+					{
+						"key": "LoadComplexity",
+						"value": "1",
+						"description": "Steuert, wieviele Ebenen der Informationen Sie beim Ergebnis erhalten. \n1 = nur die Eigenschaften des Kunden, 2 = Die Eigenschaften des Kunden + 1 Ebene, z.B. die Daten der Ansprechpartner.\nACHTUNG: Die Antorten werden bei hoher Complexity recht schnell sehr groß, daher möglichst klein halten.\n",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/Auftrag/Create?CompanyCode=22&CompanyType=Kunde",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"Auftrag",
+						"Create"
+					],
+					"query": [
+						{
+							"key": "CompanyCode",
+							"value": "22",
+							"description": "Hier den Code des Kunden angeben, für den der Auftrag erstellt werden soll. Code ggf. vorhe über Kunde/query ermitteln"
+						},
+						{
+							"key": "CompanyType",
+							"value": "Kunde"
+						}
+					]
+				},
+				"description": "This endpoint creates an order confirmation based on the customer that you specify with the CustomerCode parameter. CompanyType is customer.\n\nThe order conformation has not yet been saved, but is filled with all available information from the customer, such as language, currency, etc. Number and code are still 0, these values are only set when saving.\n\nThe call is the same for offers, supplier orders etc., for supplier order the CompanyType must be Supplier.\n\nIf necessary, search for the customer code beforehand using a Kunde/query."
+			},
+			"response": []
+		},
+		{
+			"name": "AUFTRAG Create Position",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "MandantenCode",
+						"value": "{{MandantenCode}}",
+						"description": "The code of the tenant on which the query is executed.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "//Insert the response from the previous /Auftrag/create here",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/Auftrag/createPosition?PositionsArt=Standard&ArtikelCode=20037&Anzahl=1",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"Auftrag",
+						"createPosition"
+					],
+					"query": [
+						{
+							"key": "PositionsArt",
+							"value": "Standard",
+							"description": "Die Art der Position, die angelegt wird. Alle Möglichkeiten finden Sie in der Swagger-Dokumentation"
+						},
+						{
+							"key": "ArtikelCode",
+							"value": "20037",
+							"description": "Code des Artikels für den eine Position angelegt werden soll. Ggf. vorher über /Artikel/query ermitteln"
+						},
+						{
+							"key": "Anzahl",
+							"value": "1",
+							"description": "Die Anzahl für die neue Position"
+						}
+					]
+				},
+				"description": "This end point creates a new item based on the previously created order and the item information you enter.\n\nIn the body, enter the order created in the previous step with ."
+			},
+			"response": []
+		},
+		{
+			"name": "AUFTRAG Insert",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "MandantenCode",
+						"value": "{{MandantenCode}}",
+						"description": "The code of the tenant on which the query is executed.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "//Add the response from /Auftrag/Create (the new order) here. \r\n//To add the response from Auftrag/CreatePosition (a list of positions) to the order with the 'Positions' property.",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/Auftrag/createPosition",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"Auftrag",
+						"createPosition"
+					]
+				},
+				"description": "This end point saves the newly created order confirmation. If you transfer the order from /Auftrag/Create, insert the items from /Auftrag/CreatePosition in the Items property.\n\nThe response is the code of the saved order."
+			},
+			"response": []
+		},
+		{
+			"name": "Individual Fields",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "MandantenCode",
+						"value": "{{MandantenCode}}",
+						"description": "The code of the tenant on which the query is executed.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/IndividuelleFelder?tableType=Kunden",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"IndividuelleFelder"
+					],
+					"query": [
+						{
+							"key": "tableType",
+							"value": "Kunden",
+							"description": "Abruf für Kunden, weitere Möglichkeiten finden Sie in der Swagger-Dokumentation\n"
+						}
+					]
+				},
+				"description": "You use this endpoint to retrieve the definitions of individual fields that have been created in work4all. When retrieving customers, for example, you receive the values together with the definition code.\n\nThe individual fields can be used, for example, to control a synchronization."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "API_URL",
+			"value": "API URL",
+			"type": "string"
+		},
+		{
+			"key": "API_USER",
+			"value": "Insert the user name of the service user here.",
+			"type": "string"
+		},
+		{
+			"key": "API_PASS",
+			"value": "MD5 hash of the password",
+			"type": "string"
+		},
+		{
+			"key": "Token",
+			"value": "The token you receive when you log in",
+			"type": "string"
+		},
+		{
+			"key": "MandantenCode",
+			"value": "The code of the tenant you want to work on (default = 1)",
+			"type": "string"
+		}
+	]
+}
