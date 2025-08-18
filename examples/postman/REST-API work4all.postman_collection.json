@@ -1,8 +1,8 @@
 {
 	"info": {
-		"_postman_id": "f2ec9bd1-86e1-4197-b34f-bb3f6519cf6e",
+		"_postman_id": "0181f6ef-cba1-4543-98fd-370a7a12ad19",
 		"name": "REST-API work4all",
-		"description": "Store your API url in the API_URL variable.\n\nComplete Swagger documentation of the API via the link {{API_URl}}/swagger/index.html\n\nTo use the REST-API, a corresponding user must be created using work4all, here you will find the description: https://help.work4all.de?id=cd672282-1583-4806-8c37-7445f10bd1a0\n\nStore the login data in the corresponding variables.\n\nThe Kunde/Query and Kunde/Count endpoints are explained here using customers as an example. You will also find the same endpoints for all other entities that can be retrieved, e.g. articles, projects, offers, etc.  \nSimply duplicate the requests if you want to use them on other entities.\n\nThere are no explicit examples for the Get/Delete/Post/Put endpoints in this collection, these are self-explanatory.",
+		"description": "Store your API url in the API_URL variable.\n\nComplete Swagger documentation of the API via the link {{API_URl}}/swagger/index.html\n\nTo use the REST-API, a corresponding user must be created using work4all, here you will find the description: [https://help.work4all.de?id=cd672282-1583-4806-8c37-7445f10bd1a0](https://help.work4all.de?id=cd672282-1583-4806-8c37-7445f10bd1a0)\n\nStore the login data in the corresponding variables.\n\nThe Kunde/Query and Kunde/Count endpoints are explained here using customers as an example. You will also find the same endpoints for all other entities that can be retrieved, e.g. articles, projects, offers, etc.  \nSimply duplicate the requests if you want to use them on other entities.\n\nThere are no explicit examples for the Get/Delete/Post/Put endpoints in this collection, these are self-explanatory.\n\n**News:**\n\nBreaking Change with API-Version 8.0.291. Sorting at \"/query\" changed, there are examples of both variants. Use /status to find your Api-Version.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "25569982"
 	},
@@ -37,7 +37,7 @@
 			"response": []
 		},
 		{
-			"name": "KUNDE Query unfiltered",
+			"name": "KUNDE Query unfiltered (Api Version < 8.0.291)",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -89,7 +89,59 @@
 			"response": []
 		},
 		{
-			"name": "KUNDE Query filtered",
+			"name": "KUNDE Query unfiltered (Api Version > 8.0.291)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "MandantenCode",
+						"value": "{{MandantenCode}}",
+						"description": "The code of the tenant on which the query is executed.",
+						"type": "text"
+					},
+					{
+						"key": "LoadComplexity",
+						"value": "1",
+						"description": "Controls how many levels of information you receive in the result. \n1 = only the properties of the customer, 2 = the properties of the customer + 1 level, e.g. the contact person data.\nATTENTION: The answers quickly become very large with high complexity, so keep them as small as possible.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"sortByPairs\": [                  //Add a list of fields to be sorted by\r\n    {\r\n      \"fieldName\": \"\",              //Property to be sorted by\r\n      \"sortOrder\": \"Ascending\"      //Sort directio. Possible values: Ascending, Descending\r\n    }\r\n  ],\r\n  \"max\": 3,                         //Retrieves the first three hits\r\n  \"page\": 0,                        //You can use this to control pagination and call up the next x elements.\r\n  \"groupFields\": true,\r\n  \"distinct\": true,\r\n  \"countField\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/Kunde/Query",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"Kunde",
+						"Query"
+					]
+				},
+				"description": "Retrieves the first three hits unfiltered, in the result you can view the properties of the customers, which you can filter on in the next step. You can use LoadComplexity to access dependent objects below, such as contact persons."
+			},
+			"response": []
+		},
+		{
+			"name": "KUNDE Query filtered  (Api Version < 8.0.291)",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -141,7 +193,163 @@
 			"response": []
 		},
 		{
-			"name": "KUNDE Count",
+			"name": "KUNDE Query filtered (Api Version > 8.0.291)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "MandantenCode",
+						"value": "{{MandantenCode}}",
+						"description": "The code of the tenant on which the query is executed.",
+						"type": "text"
+					},
+					{
+						"key": "LoadComplexity",
+						"value": "1",
+						"description": "Controls how many levels of information you receive in the result. \n1 = only the properties of the customer, 2 = the properties of the customer + 1 level, e.g. the contact person data.\nATTENTION: The answers quickly become very large with high complexity, so keep them as small as possible.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"sortByPairs\": [                          //Add a list of fields to be sorted by\r\n    {\r\n      \"fieldName\": \"\",                      //Property to be sorted by\r\n      \"sortOrder\": \"Ascending\"              //Sort directio. Possible values: Ascending, Descending\r\n    }\r\n  ],\r\n  \"max\": 0,                                 //Retrieves all hits\r\n  \"page\": 0,                                //You can use this to control pagination and call up the next x elements.\r\n  \"groupFields\": true,                      //Can be ignored\r\n    \"filterItems\": [\r\n    {\r\n      \"filterEntityType\": \"\",               //Can be ignored\r\n      \"filterPropertyName\": \"Nummer\",       //The property to be filtered by\r\n      \"filterValue\": \"123456\",              //The value to be filtered by\r\n      \"operator\": \"Equal\",                  //Possible operators: Equal, Like, Contains, Greater, GreaterOrEqual, Smaller, SmallerOrEqual, NotEqual, IsNull, NotIsNull, InValueList, NotInValueList, see Swagger documentation\r\n      \"not\": false,                         //Must be false always\r\n      \"connectFilterBy\": \"And\",             //If there are several filters, this property is used to determine the linking of the filters\r\n      \"index\": 0,                           //Can be ignored\r\n      \"subFilterFields\": []                 //Can be ignored\r\n    }\r\n  ],\r\n  \"distinct\": true,                         //Can be ignored\r\n  \"countField\": \"\"                          //Can be ignored\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/Kunde/Query",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"Kunde",
+						"Query"
+					]
+				},
+				"description": "Retrieves all customers with the number 123456. Set the property by which you want to filter and the FilterValue here."
+			},
+			"response": []
+		},
+		{
+			"name": "KUNDE Query Pagination (Api Version < 8.0.291)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "MandantenCode",
+						"value": "{{MandantenCode}}",
+						"description": "The code of the tenant on which the query is executed.",
+						"type": "text"
+					},
+					{
+						"key": "LoadComplexity",
+						"value": "1",
+						"description": "Controls how many levels of information you receive in the result. \n1 = only the properties of the customer, 2 = the properties of the customer + 1 level, e.g. the contact person data.\nATTENTION: The answers quickly become very large with high complexity, so keep them as small as possible.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"sortOrderFieldName\": \"Nummer\",          //Property to be sorted by\r\n  \"sortOrderEnity\": \"\",              //Can be ignored\r\n  \"sortOrder\": \"Ascending\",          //Sorting direction\r\n  \"max\": 10,                         //sets the maximum of returned items to 10.\r\n  \"page\": 0,                         //You can use this to control pagination and call up the next x elements.\r\n  \"groupFields\": true,\r\n  \"distinct\": true,\r\n  \"countField\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/Kunde/Query",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"Kunde",
+						"Query"
+					]
+				},
+				"description": "Retrieves the first three hits unfiltered, in the result you can view the properties of the customers, which you can filter on in the next step. You can use LoadComplexity to access dependent objects below, such as contact persons."
+			},
+			"response": []
+		},
+		{
+			"name": "KUNDE Query Pagination (Api Version > 8.0.291)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "MandantenCode",
+						"value": "{{MandantenCode}}",
+						"description": "The code of the tenant on which the query is executed.",
+						"type": "text"
+					},
+					{
+						"key": "LoadComplexity",
+						"value": "1",
+						"description": "Controls how many levels of information you receive in the result. \n1 = only the properties of the customer, 2 = the properties of the customer + 1 level, e.g. the contact person data.\nATTENTION: The answers quickly become very large with high complexity, so keep them as small as possible.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"sortByPairs\": [                          //Add a list of fields to be sorted by\r\n    {\r\n      \"fieldName\": \"Nummer\",                      //Property to be sorted by\r\n      \"sortOrder\": \"Ascending\"              //Sort directio. Possible values: Ascending, Descending\r\n    }\r\n  ],\r\n  \"max\": 10,                         //sets the maximum of returned items to 10.\r\n  \"page\": 0,                         //You can use this to control pagination and call up the next x elements.\r\n  \"groupFields\": true,\r\n  \"distinct\": true,\r\n  \"countField\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/Kunde/Query",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"Kunde",
+						"Query"
+					]
+				},
+				"description": "Retrieves the first three hits unfiltered, in the result you can view the properties of the customers, which you can filter on in the next step. You can use LoadComplexity to access dependent objects below, such as contact persons."
+			},
+			"response": []
+		},
+		{
+			"name": "KUNDE Count  (Api Version < 8.0.291)",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -187,7 +395,53 @@
 			"response": []
 		},
 		{
-			"name": "ARTIKEL Query unfiltered",
+			"name": "KUNDE Count  (Api Version > 8.0.291)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "MandantenCode",
+						"value": "{{MandantenCode}}",
+						"description": "The code of the tenant on which the query is executed.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"sortByPairs\": [                          //Add a list of fields to be sorted by\r\n    {\r\n      \"fieldName\": \"\",                      //Property to be sorted by\r\n      \"sortOrder\": \"Ascending\"              //Sort directio. Possible values: Ascending, Descending\r\n    }\r\n  ],\r\n  \"max\": 0,                                 //Retrieves all hits\r\n  \"page\": 0,                                //You can use this to control pagination and call up the next x elements.\r\n  \"groupFields\": true,                      //Can be ignored\r\n    \"filterItems\": [\r\n    {\r\n      \"filterEntityType\": \"\",               //Can be ignored\r\n      \"filterPropertyName\": \"Nummer\",       //The property to be filtered by\r\n      \"filterValue\": \"123456\",              //The value to be filtered by\r\n      \"operator\": \"Equal\",                  //Possible operators: Equal, Like, Contains, Greater, GreaterOrEqual, Smaller, SmallerOrEqual, NotEqual, IsNull, NotIsNull, InValueList, NotInValueList, see Swagger documentation\r\n      \"not\": false,                         //Must be false always\r\n      \"connectFilterBy\": \"And\",             //If there are several filters, this property is used to determine the linking of the filters\r\n      \"index\": 0,                           //Can be ignored\r\n      \"subFilterFields\": []                 //Can be ignored\r\n    }\r\n  ],\r\n  \"distinct\": true,                         //Can be ignored\r\n  \"countField\": \"\"                          //Can be ignored\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/Kunde/Count",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"Kunde",
+						"Count"
+					]
+				},
+				"description": "Call analogous to /api/Kunde/Query. Endpoint only returns the number of hits as the result."
+			},
+			"response": []
+		},
+		{
+			"name": "ARTIKEL Query unfiltered  (Api Version < 8.0.291)",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -239,7 +493,59 @@
 			"response": []
 		},
 		{
-			"name": "ARTIKEL Query filtered",
+			"name": "ARTIKEL Query unfiltered  (Api Version > 8.0.291)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "MandantenCode",
+						"value": "{{MandantenCode}}",
+						"description": "The code of the tenant on which the query is executed.",
+						"type": "text"
+					},
+					{
+						"key": "LoadComplexity",
+						"value": "1",
+						"description": "Controls how many levels of information you receive in the result. \n1 = only the properties of the customer, 2 = the properties of the customer + 1 level, e.g. the contact person data.\nATTENTION: The answers quickly become very large with high complexity, so keep them as small as possible.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"sortByPairs\": [                  //Add a list of fields to be sorted by\r\n    {\r\n      \"fieldName\": \"\",              //Property to be sorted by\r\n      \"sortOrder\": \"Ascending\"      //Sort directio. Possible values: Ascending, Descending\r\n    }\r\n  ],\r\n  \"max\": 3,                         //Retrieves the first three hits\r\n  \"page\": 0,                        //You can use this to control pagination and call up the next x elements.\r\n  \"groupFields\": true,\r\n  \"distinct\": true,\r\n  \"countField\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/Artikel/Query",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"Artikel",
+						"Query"
+					]
+				},
+				"description": "Retrieves the first three hits unfiltered, in the result you can view the properties of the articles, which you can filter on in the next step. You can use LoadComplexity to access dependent objects below, such as prices."
+			},
+			"response": []
+		},
+		{
+			"name": "ARTIKEL Query filtered  (Api Version < 8.0.291)",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -269,6 +575,58 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n  \"sortOrderFieldName\": \"\",                 //Property to be sorted by\r\n  \"sortOrderEnity\": \"\",                     //Can be ignored\r\n  \"sortOrder\": \"Ascending\",                 //Sorting direction\r\n  \"max\": 0,                                 //Retrieves all hits\r\n  \"page\": 0,                                //You can use this to control pagination and call up the next x elements.\r\n  \"groupFields\": true,                      //Can be ignored\r\n    \"filterItems\": [\r\n    {\r\n      \"filterEntityType\": \"\",               //Can be ignored\r\n      \"filterPropertyName\": \"Nummer\",       //The property to be filtered by\r\n      \"filterValue\": \"123456\",              //The value to be filtered by\r\n      \"operator\": \"Equal\",                  //Possible operators: Equal, Like, Contains, Greater, GreaterOrEqual, Smaller, SmallerOrEqual, NotEqual, IsNull, NotIsNull, InValueList, NotInValueList, see Swagger documentation\r\n      \"not\": false,                         //Must be false always\r\n      \"connectFilterBy\": \"And\",             //If there are several filters, this property is used to determine the linking of the filters\r\n      \"index\": 0,                           //Can be ignored\r\n      \"subFilterFields\": []                 //Can be ignored\r\n    }\r\n  ],\r\n  \"distinct\": true,                         //Can be ignored\r\n  \"countField\": \"\"                          //Can be ignored\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/Artikel/Query",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"Artikel",
+						"Query"
+					]
+				},
+				"description": "Retrieves all articles with the number 123456. Set the property by which you want to filter and the FilterValue here."
+			},
+			"response": []
+		},
+		{
+			"name": "ARTIKEL Query filtered  (Api Version > 8.0.291)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "MandantenCode",
+						"value": "{{MandantenCode}}",
+						"description": "The code of the tenant on which the query is executed.",
+						"type": "text"
+					},
+					{
+						"key": "LoadComplexity",
+						"value": "1",
+						"description": "Controls how many levels of information you receive in the result. \n1 = only the properties of the customer, 2 = the properties of the customer + 1 level, e.g. the contact person data.\nATTENTION: The answers quickly become very large with high complexity, so keep them as small as possible.",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"sortByPairs\": [                          //Add a list of fields to be sorted by\r\n    {\r\n      \"fieldName\": \"\",                      //Property to be sorted by\r\n      \"sortOrder\": \"Ascending\"              //Sort directio. Possible values: Ascending, Descending\r\n    }\r\n  ],\r\n  \"max\": 0,                                 //Retrieves all hits\r\n  \"page\": 0,                                //You can use this to control pagination and call up the next x elements.\r\n  \"groupFields\": true,                      //Can be ignored\r\n    \"filterItems\": [\r\n    {\r\n      \"filterEntityType\": \"\",               //Can be ignored\r\n      \"filterPropertyName\": \"Nummer\",       //The property to be filtered by\r\n      \"filterValue\": \"123456\",              //The value to be filtered by\r\n      \"operator\": \"Equal\",                  //Possible operators: Equal, Like, Contains, Greater, GreaterOrEqual, Smaller, SmallerOrEqual, NotEqual, IsNull, NotIsNull, InValueList, NotInValueList, see Swagger documentation\r\n      \"not\": false,                         //Must be false always\r\n      \"connectFilterBy\": \"And\",             //If there are several filters, this property is used to determine the linking of the filters\r\n      \"index\": 0,                           //Can be ignored\r\n      \"subFilterFields\": []                 //Can be ignored\r\n    }\r\n  ],\r\n  \"distinct\": true,                         //Can be ignored\r\n  \"countField\": \"\"                          //Can be ignored\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -514,6 +872,47 @@
 							"value": "Kunden",
 							"description": "Abruf für Kunden, weitere Möglichkeiten finden Sie in der Swagger-Dokumentation\n"
 						}
+					]
+				},
+				"description": "You use this endpoint to retrieve the definitions of individual fields that have been created in work4all. When retrieving customers, for example, you receive the values together with the definition code.\n\nThe individual fields can be used, for example, to control a synchronization."
+			},
+			"response": []
+		},
+		{
+			"name": "API-Status",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/api/status",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"api",
+						"status"
 					]
 				},
 				"description": "You use this endpoint to retrieve the definitions of individual fields that have been created in work4all. When retrieving customers, for example, you receive the values together with the definition code.\n\nThe individual fields can be used, for example, to control a synchronization."
