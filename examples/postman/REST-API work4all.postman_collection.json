@@ -8,6 +8,271 @@
 	},
 	"item": [
 		{
+			"name": "Create Auftrag",
+			"item": [
+				{
+					"name": "AUFTRAG Create",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "MandantenCode",
+								"value": "{{MandantenCode}}",
+								"description": "Der Code des Mandanten auf dem die Abfrage ausgeführt wird.\n",
+								"type": "text"
+							},
+							{
+								"key": "LoadComplexity",
+								"value": "1",
+								"description": "Steuert, wieviele Ebenen der Informationen Sie beim Ergebnis erhalten. \n1 = nur die Eigenschaften des Kunden, 2 = Die Eigenschaften des Kunden + 1 Ebene, z.B. die Daten der Ansprechpartner.\nACHTUNG: Die Antorten werden bei hoher Complexity recht schnell sehr groß, daher möglichst klein halten.\n",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/Auftrag/Create?CompanyCode=22&CompanyType=Kunde",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"Auftrag",
+								"Create"
+							],
+							"query": [
+								{
+									"key": "CompanyCode",
+									"value": "22",
+									"description": "Hier den Code des Kunden angeben, für den der Auftrag erstellt werden soll. Code ggf. vorhe über Kunde/query ermitteln"
+								},
+								{
+									"key": "CompanyType",
+									"value": "Kunde"
+								}
+							]
+						},
+						"description": "This endpoint creates an order confirmation based on the customer that you specify with the CustomerCode parameter. CompanyType is customer.\n\nThe order conformation has not yet been saved, but is filled with all available information from the customer, such as language, currency, etc. Number and code are still 0, these values are only set when saving.\n\nThe call is the same for offers, supplier orders etc., for supplier order the CompanyType must be Supplier.\n\nIf necessary, search for the customer code beforehand using a Kunde/query."
+					},
+					"response": []
+				},
+				{
+					"name": "AUFTRAG Create Position",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "MandantenCode",
+								"value": "{{MandantenCode}}",
+								"description": "The code of the tenant on which the query is executed.",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "//Insert the response from the previous /Auftrag/create here",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/Auftrag/createPosition?PositionsArt=Standard&ArtikelCode=20037&Anzahl=1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"Auftrag",
+								"createPosition"
+							],
+							"query": [
+								{
+									"key": "PositionsArt",
+									"value": "Standard",
+									"description": "Die Art der Position, die angelegt wird. Alle Möglichkeiten finden Sie in der Swagger-Dokumentation"
+								},
+								{
+									"key": "ArtikelCode",
+									"value": "20037",
+									"description": "Code des Artikels für den eine Position angelegt werden soll. Ggf. vorher über /Artikel/query ermitteln"
+								},
+								{
+									"key": "Anzahl",
+									"value": "1",
+									"description": "Die Anzahl für die neue Position"
+								}
+							]
+						},
+						"description": "This end point creates a new item based on the previously created order and the item information you enter.\n\nIn the body, enter the order created in the previous step with ."
+					},
+					"response": []
+				},
+				{
+					"name": "AUFTRAG Insert",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "MandantenCode",
+								"value": "{{MandantenCode}}",
+								"description": "The code of the tenant on which the query is executed.",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "//Add the response from /Auftrag/Create (the new order) here. \r\n//To add the response from Auftrag/CreatePosition (a list of positions) to the order with the 'Positions' property.",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/Auftrag/createPosition",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"Auftrag",
+								"createPosition"
+							]
+						},
+						"description": "This end point saves the newly created order confirmation. If you transfer the order from /Auftrag/Create, insert the items from /Auftrag/CreatePosition in the Items property.\n\nThe response is the code of the saved order."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get Article Image",
+			"item": [
+				{
+					"name": "Download Article default image",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "MandantenCode",
+								"value": "{{MandantenCode}}",
+								"description": "The code of the tenant on which the query is executed.",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/api/File/Download?Type=ArtikelStandardBild&codeOrId=",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"File",
+								"Download"
+							],
+							"query": [
+								{
+									"key": "Type",
+									"value": "ArtikelStandardBild",
+									"description": "Fix Value"
+								},
+								{
+									"key": "codeOrId",
+									"value": "",
+									"description": "Insert the code of the article "
+								},
+								{
+									"key": "Filename",
+									"value": "",
+									"description": "You can change the filename if needed",
+									"disabled": true
+								},
+								{
+									"key": "NewHeight",
+									"value": "0",
+									"description": "You can change the size if needed, default 0",
+									"disabled": true
+								},
+								{
+									"key": "newWidth",
+									"value": "0",
+									"description": "You can change the size if needed, default 0",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Retrieves the first three hits unfiltered, in the result you can view the properties of the customers, which you can filter on in the next step. You can use LoadComplexity to access dependent objects below, such as contact persons."
+					},
+					"response": []
+				}
+			],
+			"description": "You can get the default image of an article. First search your article using /query. You need the code of the article to request the default image.\n\nSee the API-Call in this folder to get the default image."
+		},
+		{
 			"name": "LOGIN",
 			"request": {
 				"method": "POST",
@@ -645,181 +910,6 @@
 					]
 				},
 				"description": "Retrieves all articles with the number 123456. Set the property by which you want to filter and the FilterValue here."
-			},
-			"response": []
-		},
-		{
-			"name": "AUFTRAG Create",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{Token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "MandantenCode",
-						"value": "{{MandantenCode}}",
-						"description": "Der Code des Mandanten auf dem die Abfrage ausgeführt wird.\n",
-						"type": "text"
-					},
-					{
-						"key": "LoadComplexity",
-						"value": "1",
-						"description": "Steuert, wieviele Ebenen der Informationen Sie beim Ergebnis erhalten. \n1 = nur die Eigenschaften des Kunden, 2 = Die Eigenschaften des Kunden + 1 Ebene, z.B. die Daten der Ansprechpartner.\nACHTUNG: Die Antorten werden bei hoher Complexity recht schnell sehr groß, daher möglichst klein halten.\n",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{API_URL}}/api/Auftrag/Create?CompanyCode=22&CompanyType=Kunde",
-					"host": [
-						"{{API_URL}}"
-					],
-					"path": [
-						"api",
-						"Auftrag",
-						"Create"
-					],
-					"query": [
-						{
-							"key": "CompanyCode",
-							"value": "22",
-							"description": "Hier den Code des Kunden angeben, für den der Auftrag erstellt werden soll. Code ggf. vorhe über Kunde/query ermitteln"
-						},
-						{
-							"key": "CompanyType",
-							"value": "Kunde"
-						}
-					]
-				},
-				"description": "This endpoint creates an order confirmation based on the customer that you specify with the CustomerCode parameter. CompanyType is customer.\n\nThe order conformation has not yet been saved, but is filled with all available information from the customer, such as language, currency, etc. Number and code are still 0, these values are only set when saving.\n\nThe call is the same for offers, supplier orders etc., for supplier order the CompanyType must be Supplier.\n\nIf necessary, search for the customer code beforehand using a Kunde/query."
-			},
-			"response": []
-		},
-		{
-			"name": "AUFTRAG Create Position",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{Token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "MandantenCode",
-						"value": "{{MandantenCode}}",
-						"description": "The code of the tenant on which the query is executed.",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "//Insert the response from the previous /Auftrag/create here",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{API_URL}}/api/Auftrag/createPosition?PositionsArt=Standard&ArtikelCode=20037&Anzahl=1",
-					"host": [
-						"{{API_URL}}"
-					],
-					"path": [
-						"api",
-						"Auftrag",
-						"createPosition"
-					],
-					"query": [
-						{
-							"key": "PositionsArt",
-							"value": "Standard",
-							"description": "Die Art der Position, die angelegt wird. Alle Möglichkeiten finden Sie in der Swagger-Dokumentation"
-						},
-						{
-							"key": "ArtikelCode",
-							"value": "20037",
-							"description": "Code des Artikels für den eine Position angelegt werden soll. Ggf. vorher über /Artikel/query ermitteln"
-						},
-						{
-							"key": "Anzahl",
-							"value": "1",
-							"description": "Die Anzahl für die neue Position"
-						}
-					]
-				},
-				"description": "This end point creates a new item based on the previously created order and the item information you enter.\n\nIn the body, enter the order created in the previous step with ."
-			},
-			"response": []
-		},
-		{
-			"name": "AUFTRAG Insert",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{Token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "MandantenCode",
-						"value": "{{MandantenCode}}",
-						"description": "The code of the tenant on which the query is executed.",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "//Add the response from /Auftrag/Create (the new order) here. \r\n//To add the response from Auftrag/CreatePosition (a list of positions) to the order with the 'Positions' property.",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{API_URL}}/api/Auftrag/createPosition",
-					"host": [
-						"{{API_URL}}"
-					],
-					"path": [
-						"api",
-						"Auftrag",
-						"createPosition"
-					]
-				},
-				"description": "This end point saves the newly created order confirmation. If you transfer the order from /Auftrag/Create, insert the items from /Auftrag/CreatePosition in the Items property.\n\nThe response is the code of the saved order."
 			},
 			"response": []
 		},
