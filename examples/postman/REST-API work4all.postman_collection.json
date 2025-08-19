@@ -188,10 +188,10 @@
 			]
 		},
 		{
-			"name": "Get Article Image",
+			"name": "Get Article Images",
 			"item": [
 				{
-					"name": "Download Article default image",
+					"name": "Download article default image",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -270,7 +270,7 @@
 					"response": []
 				}
 			],
-			"description": "You can get the default image of an article. First search your article using /query. You need the code of the article to request the default image.\n\nSee the API-Call in this folder to get the default image."
+			"description": "### Get default article image\n\nYou can get the default image of an article. First search your article using /query. You need the code of the article to request the default image.\n\nSee the API-Call in this folder to get the default image.\n\n### Get all images of an article\n\nLoad the article using /query with LoadComplexity set to 2. Property DateiInfos returns a list of the images of the article.\n\nYou can download the images by code using the API-Call in this filter."
 		},
 		{
 			"name": "LOGIN",
