@@ -1,5 +1,6 @@
 {
 	"info": {
+		"_postman_id": "d225f777-83de-4df8-9d5d-4faa6c16bd85",
 		"name": "REST-API work4all",
 		"description": "Store your API url in the API_URL variable.\n\nComplete Swagger documentation of the API via the link {{API_URl}}/swagger/index.html\n\nTo use the REST-API, a corresponding user must be created using work4all, here you will find the description: [https://help.work4all.de?id=cd672282-1583-4806-8c37-7445f10bd1a0](https://help.work4all.de?id=cd672282-1583-4806-8c37-7445f10bd1a0)\n\nStore the login data in the corresponding variables.\n\nThe Kunde/Query and Kunde/Count endpoints are explained here using customers as an example. You will also find the same endpoints for all other entities that can be retrieved, e.g. articles, projects, offers, etc.  \nSimply duplicate the requests if you want to use them on other entities.\n\nThere are no explicit examples for the Get/Delete/Post/Put endpoints in this collection, these are self-explanatory.\n\n**News:**\n\nBreaking Change with API-Version 8.0.291. Sorting at \"/query\" changed, there are examples of both variants. Use /status to find your Api-Version.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -269,6 +270,7 @@
 					"response": []
 				}
 			],
+			"description": "### Get default article image\n\nYou can get the default image of an article. First search your article using /query. You need the code of the article to request the default image.\n\nSee the API-Call in this folder to get the default image.\n\n### Get all images of an article\n\nLoad the article using /query with LoadComplexity set to 2. Property DateiInfos returns a list of the images of the article.\n\nYou can download the images by code using the API-Call \"Download article image by Code\" in this group."
 		},
 		{
 			"name": "LOGIN",
