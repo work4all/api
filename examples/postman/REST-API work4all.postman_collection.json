@@ -268,6 +268,53 @@
 						"description": "Retrieves the first three hits unfiltered, in the result you can view the properties of the customers, which you can filter on in the next step. You can use LoadComplexity to access dependent objects below, such as contact persons."
 					},
 					"response": []
+				},
+				{
+					"name": "Download article image by Code",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "MandantenCode",
+								"value": "{{MandantenCode}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{API_URL}}/api/File/Download?Type=ArtikelDokument&codeOrId=",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"api",
+								"File",
+								"Download"
+							],
+							"query": [
+								{
+									"key": "Type",
+									"value": "ArtikelDokument",
+									"description": "Fix Value"
+								},
+								{
+									"key": "codeOrId",
+									"value": "",
+									"description": "Insert the code of the image/document to download"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"description": "### Get default article image\n\nYou can get the default image of an article. First search your article using /query. You need the code of the article to request the default image.\n\nSee the API-Call in this folder to get the default image.\n\n### Get all images of an article\n\nLoad the article using /query with LoadComplexity set to 2. Property DateiInfos returns a list of the images of the article.\n\nYou can download the images by code using the API-Call \"Download article image by Code\" in this group."
