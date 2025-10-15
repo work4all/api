@@ -171,14 +171,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{API_URL}}/api/Auftrag/createPosition",
+							"raw": "{{API_URL}}/api/Auftrag",
 							"host": [
 								"{{API_URL}}"
 							],
 							"path": [
 								"api",
-								"Auftrag",
-								"createPosition"
+								"Auftrag"
 							]
 						},
 						"description": "This end point saves the newly created order confirmation. If you transfer the order from /Auftrag/Create, insert the items from /Auftrag/CreatePosition in the Items property.\n\nThe response is the code of the saved order."
